@@ -33,15 +33,21 @@ A Java Swing-based GUI application designed to manage parking spaces for 2-wheel
    - Create a `bookings` table using the following SQL:
      ```sql
      CREATE TABLE bookings (
-         id INT PRIMARY KEY AUTO_INCREMENT,
-         username VARCHAR(50),
-         mobile VARCHAR(15),
-         car_number VARCHAR(15),
-         card_number VARCHAR(16),
-         cvv VARCHAR(3),
-         expiry_date VARCHAR(5),
-         duration INT
-     );
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL,
+    mobile VARCHAR(15) NOT NULL,
+    car_number VARCHAR(15) NOT NULL,
+    card_number VARCHAR(64) NOT NULL,  -- Increased length for encrypted values
+    cvv VARCHAR(64) NOT NULL,          -- Increased length for encrypted values
+    expiry_date VARCHAR(5) NOT NULL,   -- Format: MM/YY
+    duration INT NOT NULL CHECK (duration > 0),
+    slot_id VARCHAR(20) NOT NULL,
+    status ENUM('booked', 'cancelled', 'expired') DEFAULT 'booked',
+    booking_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    CONSTRAINT unique_slot UNIQUE (slot_id, status)
+);
+
      ```
 
 3. Update the database credentials:
